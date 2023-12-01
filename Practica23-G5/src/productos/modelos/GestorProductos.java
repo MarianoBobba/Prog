@@ -4,6 +4,11 @@
  */
 package productos.modelos;
 import interfaces.IGestorProductos;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import productos.modelos.Producto;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +22,7 @@ import pedidos.modelos.GestorPedidos;
  */
 public class GestorProductos implements IGestorProductos {
     
+    private static final String FILE_NAME = "productos.txt";
     private static GestorProductos gestor;
 
     public static IGestorProductos instanciar() {
@@ -42,6 +48,32 @@ public class GestorProductos implements IGestorProductos {
         return gestor;
     }
     
+    private List<Producto> cargarProductosDesdeArchivo() {
+        List<Producto> productosCargados = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Producto producto = Producto.convertirDesdeCSV(line);
+                if (producto != null) {
+                    productosCargados.add(producto);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al cargar productos desde el archivo: " + e.getMessage());
+        }
+        return productosCargados;
+    }
+
+    private void guardarProductosEnArchivo() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+            for (Producto producto : productos) {
+                writer.println(producto.toCSV());
+            }
+        } catch (IOException e) {
+            System.err.println("Error al guardar productos en el archivo: " + e.getMessage());
+        }
+    }
+    
     public String crearProducto(int codigo, String descripcion, float precio,Categoria categoria, Estado estado) {
         
         Producto P1 = new Producto (codigo, descripcion, categoria, estado, precio);
@@ -58,6 +90,7 @@ public class GestorProductos implements IGestorProductos {
             return ESTADO;
         else if (!productos.contains(P1)){
             productos.add(P1);
+            guardarProductosEnArchivo();
             return EXITO;
         }
         else 
@@ -84,11 +117,13 @@ public class GestorProductos implements IGestorProductos {
         productoAModificar.asignarPrecio (precio);
         productoAModificar.asignarCategoria (categoria);
         productoAModificar.asignarEstado (estado);
+        guardarProductosEnArchivo();
         return EXITO;
         }
       }  
         public List<Producto> menu() {
         Collections.sort(productos, Comparator.comparing(Producto::verCategoria).thenComparing(Producto::verDescripcion));
+        guardarProductosEnArchivo();
         return productos;
     }
 
@@ -101,6 +136,7 @@ public class GestorProductos implements IGestorProductos {
             }
         }
         Collections.sort(productosEncontrados, Comparator.comparing(Producto::verCategoria).thenComparing(Producto::verDescripcion));
+        guardarProductosEnArchivo();
         return productosEncontrados;
     }
     
@@ -117,6 +153,7 @@ public class GestorProductos implements IGestorProductos {
             }
         }
         Collections.sort(productosPorCategoria, Comparator.comparing(Producto::verDescripcion));
+        guardarProductosEnArchivo();
         return productosPorCategoria;
     }
     
@@ -141,6 +178,7 @@ public class GestorProductos implements IGestorProductos {
                     
                 } else {
                     productos.remove(producto);
+                    guardarProductosEnArchivo();
                     return EXITO;
                 }        
         }

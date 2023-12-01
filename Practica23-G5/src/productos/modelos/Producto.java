@@ -34,11 +34,19 @@ public class Producto {
         System.out.println("Categoria: "+ categoria + "\t" + "Estado: " + estado);
         //System.out.println("El codigo del producto es: "+ codigo +"Su descripcion: "+ descripcion + "Su precio: "+ precio +"Su estado: "+ estado +"Su categoria: "+ categoria);
     }
-
-    public String toString () {
-        return descripcion;
+    
+     public String toCSV() {
+        return codigo + "," + descripcion + "," + categoria + "," + estado + "," + precio;
     }
-
+     
+    public static Producto convertirDesdeCSV(String csv) {
+        String[] datos = csv.split(",");
+        if (datos.length != 5) {
+            return null;
+        }
+        return null;
+    }
+    
     public int verCodigo() {
         return codigo;
     }

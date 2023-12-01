@@ -102,7 +102,7 @@ public class ControladorPrincipalTP7  {
         }
         System.out.println();
       
-        System.out.println(gp.modificarProducto(unProducto1, 100, "Producto11", 10.0f, Categoria.PLATO_PRINCIPAL, Estado.NO_DISPONIBLE));
+        System.out.println(gp.modificarProducto(unProducto1, 10020, "Producto11", 10.0f, Categoria.PLATO_PRINCIPAL, Estado.NO_DISPONIBLE));
         //se le cambia la descripción, precio, categoría y estado
         //el código, por más que se lo pasa, no se modifica
         productosBuscados = gp.buscarProductos("Producto11");
@@ -118,7 +118,7 @@ public class ControladorPrincipalTP7  {
         System.out.println(gp.modificarProducto(unProducto2, 1, "Producto2Modif", 10.0f, Categoria.PLATO_PRINCIPAL, Estado.DISPONIBLE));        
         //sí se puede
 //        
-//        System.out.println(gp.borrarProducto(unProducto1));
+        System.out.println(gp.borrarProducto(unProducto1));
 //        //sí se puede
 //        
         System.out.println("Productos");
