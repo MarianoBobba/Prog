@@ -56,7 +56,7 @@ public class GestorUsuarios implements IGestorUsuarios{
             return NOMBRE;
         else if (correo == null || correo.isEmpty () || !correo.contains("@"))
             return CORREO;
-        else if (clave != claveRepetida)
+        else if (clave == null ? claveRepetida != null : !clave.equals(claveRepetida))
             return CLAVE_REPETIDA;
         if (null == perfil) 
             return PERFIL;

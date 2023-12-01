@@ -6,27 +6,18 @@
 package principal.controladores;
 
 
-//import interfaces.IGestorProductos;
-//import interfaces.IGestorUsuarios;
-import interfaces.IGestorPedidos;
 import interfaces.IGestorProductos;
 import interfaces.IGestorUsuarios;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import productos.modelos.Producto;
 import java.util.List;
 import javax.swing.UIManager;
-import pedidos.modelos.GestorPedidos;
-import pedidos.modelos.Pedido;
-import pedidos.modelos.ProductoDelPedido;
 import productos.modelos.Categoria;
 import productos.modelos.Estado;
 import productos.modelos.GestorProductos;
-import usuarios.modelos.Cliente;
 import usuarios.modelos.GestorUsuarios;
-import usuarios.modelos.Perfil;
 import usuarios.modelos.Usuario;
-//import usuarios.vistas.VentanaAMUsuario;
+import usuarios.vistas.VentanaAMUsuario;
 
 /**
  *
@@ -36,11 +27,7 @@ public class ControladorPrincipalTP7  {
     public static void main(String[] args) {
         IGestorProductos gp = GestorProductos.instanciar();
         IGestorUsuarios gu = GestorUsuarios.instanciar();
-        IGestorPedidos gd = GestorPedidos.instanciar();
-        List <Usuario> usuarios = new ArrayList<>();
-//        GestorProductos gp = GestorProductos.crear();
-//        GestorPedidos gd = GestorPedidos.crear();
-//        GestorUsuarios gu = GestorUsuarios.crear();
+        List<Usuario> usuarios = new ArrayList<>();
         //Creación de productos
 
         /*Usar una vez la creación para verificar que se guardan en el archivo*/
@@ -76,7 +63,7 @@ public class ControladorPrincipalTP7  {
         Producto unProducto2 = gp.obtenerProducto(2);
         
         System.out.println(gp.existeEsteProducto(unProducto1));
-        Producto unProducto10 = new Producto(10, "Producto10",Categoria.ENTRADA, Estado.DISPONIBLE, 10.0f);
+        Producto unProducto10 = new Producto(10, "Producto10", Categoria.ENTRADA, Estado.DISPONIBLE, 10.0f);
         //producto inexistente
         System.out.println(gp.existeEsteProducto(unProducto10));
                
@@ -102,7 +89,7 @@ public class ControladorPrincipalTP7  {
         }
         System.out.println();
       
-        System.out.println(gp.modificarProducto(unProducto1, 10020, "Producto11", 10.0f, Categoria.PLATO_PRINCIPAL, Estado.NO_DISPONIBLE));
+        System.out.println(gp.modificarProducto(unProducto1, 100, "Producto11", 10.0f, Categoria.PLATO_PRINCIPAL, Estado.NO_DISPONIBLE));
         //se le cambia la descripción, precio, categoría y estado
         //el código, por más que se lo pasa, no se modifica
         productosBuscados = gp.buscarProductos("Producto11");
@@ -117,10 +104,10 @@ public class ControladorPrincipalTP7  {
         System.out.println();
         System.out.println(gp.modificarProducto(unProducto2, 1, "Producto2Modif", 10.0f, Categoria.PLATO_PRINCIPAL, Estado.DISPONIBLE));        
         //sí se puede
-//        
+        
         System.out.println(gp.borrarProducto(unProducto1));
-//        //sí se puede
-//        
+        //sí se puede
+        
         System.out.println("Productos");
         System.out.println("=========");
         for(Producto p : gp.menu()) {
@@ -130,91 +117,36 @@ public class ControladorPrincipalTP7  {
             }
         }
         System.out.println();
-//        
-//        establecerLookAndFeel("Nimbus"); 
-//        VentanaAMUsuario ventanaAUsuario = new VentanaAMUsuario(null);
-//              
-        System.out.println("USUARIOS");
-        System.out.println("=====");
-        usuarios = gu.verUsuarios();
-        for(Usuario u : usuarios) {
-            u.mostrar();
-            System.out.println();
-        }
         
-        System.out.println(gu.crearUsuario("correo1@gmail.com", "ABCD", "BOBBA", "MARIANO", "ABCD",Perfil.CLIENTE));       
-        System.out.println(gu.crearUsuario("correo2@gmail.com", "ABCD",  "BOBBA", "MARIANO", "ABCD",Perfil.CLIENTE));
-        System.out.println(gu.crearUsuario("correo3@gmail.com", "ABCD",  "BOBBA", "MARIANO", "ABCD",Perfil.CLIENTE));
-        System.out.println(gu.crearUsuario("correo1@gmail.com", "ABCD",  "BOBBA", "MARIANO", "ABCD",Perfil.CLIENTE));
-        //usuario repetido
-        System.out.println(gu.crearUsuario("correo4@gmail.com", "", "BOBBA", "MARIANO", "ABCD",Perfil.CLIENTE));
-        //clave inválida
-        System.out.println(gu.crearUsuario("correo5@gmail.com", "ABCD", "BOBBA", "MARIANO", "ABC",Perfil.CLIENTE));
-        //claves distintas
-        System.out.println(gu.crearUsuario("correo6gmail.com", "ABCD", "BOBBA", "MARIANO", "ABCD",Perfil.CLIENTE));
-        //correo sin @
-        System.out.println(gu.crearUsuario("correo7@gmail.com", "ABCD", "BOBBA", null, "ABCD",Perfil.CLIENTE));
-        //sin nombre
-        System.out.println(gu.crearUsuario("correo8@gmail.com", "ABCD", null, "MARIANO", "ABCD",Perfil.CLIENTE));
-        //sin apellido
-        System.out.println(gu.crearUsuario("correo9@gmail.com", "ABCD", "BOBBA", "MARIANO", "ABCD",null));
-       
+        establecerLookAndFeel("Nimbus"); 
+        VentanaAMUsuario ventanaAUsuario = new VentanaAMUsuario(null, true);
+        ventanaAUsuario.setLocationRelativeTo(null);
+        ventanaAUsuario.setTitle("Nuevo Usuario");
+        ventanaAUsuario.setVisible(true);
         
         System.out.println("USUARIOS");
         System.out.println("=====");
-        usuarios = gu.verUsuarios();
-        for(Usuario u : usuarios) {
-            u.mostrar();
-            System.out.println();
-        }
-        
-        List<ProductoDelPedido> pdps = new ArrayList<>() ;
-        ProductoDelPedido pdp = new ProductoDelPedido(gp.obtenerProducto(3),4);
-        pdps.add(pdp);
-        Cliente cliente;
-        cliente = (Cliente) gu.obtenerUsuario("correo1@gmail.com");
-        
-        
-        System.out.println(gd.crearPedido(5, LocalDateTime.now(), pdps, cliente));
-        
-        System.out.println(gu.borrarUsuario(cliente));
-        
-        System.out.println("USUARIOS");
-        System.out.println("=====");
-        usuarios = gu.verUsuarios();
-        for(Usuario u : usuarios) {
-            u.mostrar();
-            System.out.println();
-        }
-        
-        Pedido UnPedido = gd.obtenerPedido(5);
-        System.out.println(gd.cancelarPedido(UnPedido));
-        
-        System.out.println(gu.borrarUsuario(cliente));
-        
-        System.out.println("USUARIOS");
-        System.out.println("=====");
-        usuarios = gu.verUsuarios();
+        usuarios=gu.verUsuarios();
         for(Usuario u : usuarios) {
             u.mostrar();
             System.out.println();
         }
 
-//    } 
-//    
-//    public static void establecerLookAndFeel(String laf) {
-//        try {
-//            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//                if (laf.equals(info.getName())) {
-//                    UIManager.setLookAndFeel(info.getClassName());
-//                }
-//            }
-//        } catch (Exception e) {
-//            try {
-//                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//            } 
-//            catch (Exception e2) {
-//            }
-//        }
+    } 
+    
+    public static void establecerLookAndFeel(String laf) {
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if (laf.equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                }
+            }
+        } catch (Exception e) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } 
+            catch (Exception e2) {
+            }
+        }
     }
 }
