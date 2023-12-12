@@ -44,19 +44,19 @@ public class GestorUsuarios implements IGestorUsuarios {
     public String crearUsuario(String correo, String apellido, String nombre, Perfil perfil, String clave, String claveRepetida) {
 
         if (correo == null || !correo.contains("@")) {
-            return ERROR_CORREO;
+            return CORREO;
         }
         if (apellido == null || apellido.isEmpty()) {
-            return ERROR_APELLIDO;
+            return APELLIDO;
         }
         if (nombre == null || nombre.isEmpty()) {
-            return ERROR_NOMBRE;
+            return NOMBRE;
         }
         if (clave == null || clave.isEmpty()) {
-            return ERROR_CLAVE;
+            return CLAVE;
         }
         if (claveRepetida == null || claveRepetida.isEmpty() || !claveRepetida.equals(clave)) {
-            return ERROR_CLAVES;
+            return CLAVES;
         } else {
             switch (perfil) {
                 case CLIENTE:
@@ -96,27 +96,27 @@ public class GestorUsuarios implements IGestorUsuarios {
         Usuario usuarioAuxiliar = null;
 
         if (perfil == null) {
-            return ERROR_PERFIL;
+            return PERFIL;
         }
 
         if (correo == null || !correo.contains("@")) {
-            return ERROR_CORREO;
+            return CORREO;
         }
 
         if (apellido == null || apellido.isEmpty()) {
-            return ERROR_APELLIDO;
+            return APELLIDO;
         }
 
         if (nombre == null || nombre.isEmpty()) {
-            return ERROR_NOMBRE;
+            return NOMBRE;
         }
 
         if (clave == null || clave.isEmpty()) {
-            return ERROR_CLAVE;
+            return CLAVE;
         }
 
         if (claveRepetida == null || claveRepetida.isEmpty() || !claveRepetida.equals(clave)) {
-            return ERROR_CLAVES;
+            return CLAVES;
         } else {
 
             for (Usuario u : usuarios) {

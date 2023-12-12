@@ -54,7 +54,7 @@ public class ControladorUsuarios implements IControladorUsuarios {
         int filaSeleccionada = this.ventanaUsuario.getTablaUsuarios().getSelectedRow();
         if (filaSeleccionada != -1) {
             Usuario usuario = ( (ModeloTablaUsuarios) this.ventanaUsuario.getTablaUsuarios().getModel()).verUsuarioSeleccionado(filaSeleccionada);
-            int respuesta = JOptionPane.showOptionDialog(null, CONFIRMACION, "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Sí", "No"}, null);
+            int respuesta = JOptionPane.showOptionDialog(null, CONFIRMACION, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Sí", "No"}, null);
             if (respuesta == JOptionPane.YES_OPTION) {
                 gu.borrarUsuario(usuario);
                 System.out.println(gu.borrarUsuario(usuario));

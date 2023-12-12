@@ -15,6 +15,7 @@ public class ModeloTablaUsuarios extends AbstractTableModel {
         this.nombreColumnas.add("Apellidos");
         this.nombreColumnas.add("Nombres");
         this.nombreColumnas.add("Perfil");
+        this.nombreColumnas.add ("Correo");
         this.usuarios = gu.verUsuarios();
     }
     
@@ -22,6 +23,7 @@ public class ModeloTablaUsuarios extends AbstractTableModel {
         this.nombreColumnas.add("Apellidos");
         this.nombreColumnas.add("Nombres");
         this.nombreColumnas.add("Perfil");
+        this.nombreColumnas.add ("Correo");
         this.usuarios = gu.buscarUsuarios(apellido);
     }
 
@@ -44,8 +46,10 @@ public class ModeloTablaUsuarios extends AbstractTableModel {
                 return u.verApellido();
             case 1:
                 return u.verNombre();
-            default:
+            case 2:
                 return u.verPerfil();
+            default:
+                return u.verCorreo();
         }
     }
    
