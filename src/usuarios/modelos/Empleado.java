@@ -1,20 +1,23 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package usuarios.modelos;
 
-import java.util.List;
+import java.util.ArrayList;
 import pedidos.modelos.Pedido;
+import pedidos.modelos.GestorPedidos;
 
-
-public class Empleado extends Usuario {  
-
-    public Empleado(String correo, String clave, String apellido, String nombre, Perfil perfil) {
-        super(correo, clave, apellido, nombre,perfil);
-    }
+/**
+ *
+ * @author Usuario
+ */
+public class Empleado extends Usuario{
     
-    @Override
-    public List<Pedido> verPedidos(){
-        return verPedidos();
-    }
     
+    //Constructor
+      public Empleado(String correo, String clave, String apellido, String nombre, String claveRepetida, Perfil perfil) {    
+        super(correo, clave, apellido, nombre, claveRepetida, perfil);
+    }
     
 }

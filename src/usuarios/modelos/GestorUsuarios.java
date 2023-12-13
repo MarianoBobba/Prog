@@ -1,7 +1,7 @@
 package usuarios.modelos;
 
 import interfaces.IGestorUsuarios;
-import static interfaces.IGestorUsuarios.USUARIOS_DUPLICADOS;
+import static interfaces.IGestorUsuarios.REPETIDO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,7 +20,7 @@ import static usuarios.modelos.Perfil.ENCARGADO;
 
 public class GestorUsuarios implements IGestorUsuarios {
 
-    private final String NombreDelArchivo = "ArchivoUsuarios.txt";
+    private final String ARCHIVO = "ArchivoUsuarios.txt";
     BufferedWriter bw = null;
     BufferedReader br = null;
     String linea;
@@ -30,7 +30,7 @@ public class GestorUsuarios implements IGestorUsuarios {
     private static GestorUsuarios gestor;
 
     private GestorUsuarios() {
-        this.leer(NombreDelArchivo);
+        this.cargarDatosDesdeArchivo(ARCHIVO);
     }
 
     public static GestorUsuarios instanciar() {
@@ -56,34 +56,34 @@ public class GestorUsuarios implements IGestorUsuarios {
             return CLAVE;
         }
         if (claveRepetida == null || claveRepetida.isEmpty() || !claveRepetida.equals(clave)) {
-            return CLAVES;
+            return CLAVE;
         } else {
             switch (perfil) {
                 case CLIENTE:
-                    Usuario unCliente = new Cliente(correo, clave, apellido, nombre, perfil);
+                    Usuario unCliente = new Cliente(correo, clave, apellido, nombre, claveRepetida, perfil);
                     if (!usuarios.contains(unCliente)) {
                         usuarios.add(unCliente);
-                        this.escribir();
+                        this.guardarDatosEnArchivo();
                     } else {
-                        return USUARIOS_DUPLICADOS;
+                        return REPETIDO;
                     }
                     break;
                 case EMPLEADO:
-                    Usuario unEmpleado = new Empleado(correo, clave, apellido, nombre, perfil);
+                    Usuario unEmpleado = new Empleado(correo, clave, apellido, nombre, claveRepetida, perfil);
                     if (!usuarios.contains(unEmpleado)) {
                         usuarios.add(unEmpleado);
-                        this.escribir();
+                        this.guardarDatosEnArchivo();
                     } else {
-                        return USUARIOS_DUPLICADOS;
+                        return REPETIDO;
                     }
                     break;
                 case ENCARGADO:
-                    Usuario unEncargado = new Encargado(correo, clave, apellido, nombre, perfil);
+                    Usuario unEncargado = new Encargado(correo, clave, apellido, nombre, claveRepetida, perfil);
                     if (!usuarios.contains(unEncargado)) {
                         usuarios.add(unEncargado);
-                        this.escribir();
+                        this.guardarDatosEnArchivo();
                     } else {
-                        return USUARIOS_DUPLICADOS;
+                        return REPETIDO;
                     }
                     break;
             }            
@@ -93,44 +93,39 @@ public class GestorUsuarios implements IGestorUsuarios {
     
     @Override
     public String modificarUsuario(Usuario usuarioAModificar, String correo, String apellido, String nombre, Perfil perfil, String clave, String claveRepetida) {
-        Usuario usuarioAuxiliar = null;
+        Usuario usuario = null;
 
         if (perfil == null) {
             return PERFIL;
         }
-
         if (correo == null || !correo.contains("@")) {
             return CORREO;
         }
-
         if (apellido == null || apellido.isEmpty()) {
             return APELLIDO;
         }
-
         if (nombre == null || nombre.isEmpty()) {
             return NOMBRE;
         }
-
         if (clave == null || clave.isEmpty()) {
             return CLAVE;
         }
-
         if (claveRepetida == null || claveRepetida.isEmpty() || !claveRepetida.equals(clave)) {
-            return CLAVES;
+            return CLAVE;
         } else {
 
             for (Usuario u : usuarios) {
                 if (u.equals(usuarioAModificar)) {
-                    usuarioAuxiliar = u;
+                    usuario = u;
                 }
             }
-            if (usuarioAuxiliar == null) {
-                return USUARIO_INEXISTENTE;
+            if (usuario == null) {
+                return INEXISTENTE;
             }
-            usuarioAuxiliar.asignarApellido(apellido);
-            usuarioAuxiliar.asignarNombre(nombre);
-            usuarioAuxiliar.asignarClave(clave);
-            this.escribir();
+            usuario.asignarApellido(apellido);
+            usuario.asignarNombre(nombre);
+            usuario.asignarClave(clave);
+            this.guardarDatosEnArchivo();
             return EXITO;
         }
     }
@@ -143,7 +138,6 @@ public class GestorUsuarios implements IGestorUsuarios {
     @Override
     public List<Usuario> buscarUsuarios(String apellido) {
         List<Usuario> usuariosBuscados = new ArrayList<>();
-
         if (apellido != null) {
 
             for (Usuario u : usuarios) {
@@ -152,7 +146,6 @@ public class GestorUsuarios implements IGestorUsuarios {
                 }
             }
         }
-
         Collections.sort(usuariosBuscados, (u1, u2) -> {
             if (u1.verApellido().compareTo(u2.verApellido()) == 0) {
                 return u1.verNombre().compareTo(u2.verNombre());
@@ -160,7 +153,6 @@ public class GestorUsuarios implements IGestorUsuarios {
                 return u1.verApellido().compareTo(u2.verApellido());
             }
         });
-
         return usuariosBuscados;
     }
 
@@ -197,7 +189,7 @@ public class GestorUsuarios implements IGestorUsuarios {
     public String borrarUsuario(Usuario usuario) {
 
         if (usuario == null) {
-            return USUARIO_INEXISTENTE;
+            return INEXISTENTE;
         }
 
         switch (usuario.verPerfil()) {
@@ -205,7 +197,7 @@ public class GestorUsuarios implements IGestorUsuarios {
                 for (Usuario u : usuarios) {
                     if (u.equals(usuario) && (usuario.verPedidos().isEmpty() || usuario.verPedidos() == null)) {
                         usuarios.remove(u);
-                        this.escribir();
+                        this.guardarDatosEnArchivo();
                         return EXITO;
                     }
 
@@ -216,7 +208,7 @@ public class GestorUsuarios implements IGestorUsuarios {
                 for (Usuario u : usuarios) {
                     if (u.equals(usuario)) {
                         usuarios.remove(u);
-                        this.escribir();
+                        this.guardarDatosEnArchivo();
                         return EXITO;
                     }
 
@@ -227,7 +219,7 @@ public class GestorUsuarios implements IGestorUsuarios {
                 for (Usuario u : usuarios) {
                     if (u.equals(usuario)) {
                         usuarios.remove(u);
-                        this.escribir();
+                        this.guardarDatosEnArchivo();
                         return EXITO;
                     }
 
@@ -239,8 +231,8 @@ public class GestorUsuarios implements IGestorUsuarios {
         return " ";
     }
 
-    private void escribir() {
-        File f = new File(NombreDelArchivo);
+    private void guardarDatosEnArchivo() {
+        File f = new File(ARCHIVO);
 
         try {
             FileWriter fw = new FileWriter(f);
@@ -260,8 +252,8 @@ public class GestorUsuarios implements IGestorUsuarios {
 
     }
 
-    private void leer(String NombreDelArchivo) {
-        File f = new File(NombreDelArchivo);
+    private void cargarDatosDesdeArchivo(String ARCHIVO) {
+        File f = new File(ARCHIVO);
 
         try {
             FileReader fr = new FileReader(f);
@@ -285,6 +277,6 @@ public class GestorUsuarios implements IGestorUsuarios {
             
         }
     }
-    
+
     
 }

@@ -4,35 +4,35 @@
  */
 package interfaces;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import pedidos.modelos.Pedido;
 import pedidos.modelos.ProductoDelPedido;
 import productos.modelos.Producto;
 import usuarios.modelos.Cliente;
 
-
+/**
+ *
+ * @author estudiante
+ */
 public interface IGestorPedidos {
     
-    public static final String EXITO = "Pedido creado/modificado/cancelado con exito";
-    public static final String ERROR_FECHA = "La fecha del pedido es incorrecta";
-    public static final String ERROR_HORA = "La hora del pedido es incorrecta";
-    public static final String ERROR_PRODUCTOS_DEL_PEDIDO = "El pedido no tiene productos";
-    public static final String ERROR_CLIENTE = "El pedido no tiene un cliente";
-    public static final String ERROR_ESTADO = "El pedido no tiene un estado";
-    public static final String ERROR_CANCELAR = "No se puede cancelar el pedido en este estado";
-    public static final String PEDIDOS_DUPLICADOS = "Ya existe un pedido con ese numero";
-    public static final String PEDIDO_INEXISTENTE = "No existe el pedido especificado";
-    public static final String VALIDACION_EXITO = "El pedido tiene los datos correctos";
+    public static final String EXITO = "Se creo/modifico el pedido con exito.";
+    public static final String CLIENTE = "Cliente invalido. No se creo/modifico el pedido.";
+    public static final String PDP = "Producto del pedido invalido. No se creo/modifico el pedido.";
+    public static final String FECHAYHORA = "Fecha u hora invalidas. No se creo/modifico el pedido.";
+    public static final String NUMERO = "Numero invalido. No se creo/modifico el pedido.";
+    public static final String REPETIDO = "Pedido ya existente. No se creo/modifico el pedido.";
+    public static final String INEXISTENTE = "Pedido no existente. No se creo/modifico el pedido.";
     
-    
-    public String crearPedido(LocalDate fecha, LocalTime hora, List<ProductoDelPedido> productosDelPedido, Cliente cliente);
-    public String cambiarEstado(Pedido pedidoAModificar);
+    public String crearPedido(int numero, LocalDateTime fechaYHora, List<ProductoDelPedido> pdp, Cliente cliente);
+    public String cambiarEstado (Pedido pedidoAModificar);
     public List<Pedido> verPedidos();
     public boolean hayPedidosConEsteCliente(Cliente cliente);
     public boolean hayPedidosConEsteProducto(Producto producto);
     public String cancelarPedido(Pedido pedido);
     public boolean existeEstePedido(Pedido pedido);
-    public Pedido obtenerPedido(Integer numero);
+    public Pedido obtenerPedido(int numero);
+    
 }

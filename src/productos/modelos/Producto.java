@@ -1,37 +1,58 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package productos.modelos;
 
+import java.util.Objects;
 
-public class Producto implements Comparable<Producto>{
+/**
+ *
+ * @author Usuario
+ */
+public class Producto {
     private int codigo;
-    private float precio;
     private String descripcion;
-    private Categoria categoria;
+    private float precio;
     private Estado estado;
-
-    public Producto(int codigo, String descripcion, Categoria categoria, Estado estado ,float precio) {
+    private Categoria categoria;
+    
+    //Constructor
+    public Producto(int codigo, String descripcion, Categoria categoria, Estado estado, float precio) {
         this.codigo = codigo;
-        this.precio = precio;
         this.descripcion = descripcion;
-        this.categoria = categoria;
+        this.precio = precio;
         this.estado = estado;
+        this.categoria = categoria;
     }
     
-
+    //Metodos
+    public void mostrar () {
+        System.out.println("Codigo: " + codigo);
+        System.out.println("Descripcion: " + descripcion);
+        System.out.println("Precio: " + precio);
+        System.out.println("Categoria: "+ categoria + "\t" + "Estado: " + estado);
+        //System.out.println("El codigo del producto es: "+ codigo +"Su descripcion: "+ descripcion + "Su precio: "+ precio +"Su estado: "+ estado +"Su categoria: "+ categoria);
+    }
+    
+    public String toCSV() {
+        return codigo + "," + descripcion + "," + categoria + "," + estado + "," + precio;
+    }
+     
+    public static Producto convertirDesdeCSV(String csv) {
+        String[] datos = csv.split(",");
+        if (datos.length != 5) {
+            return null;
+        }
+        return null;
+    }
+    
     public int verCodigo() {
         return codigo;
     }
 
     public void asignarCodigo(int codigo) {
         this.codigo = codigo;
-    }
-
-    public float verPrecio() {
-        return precio;
-    }
-
-    public void asignarPrecio(float precio) {
-        this.precio = precio;
     }
 
     public String verDescripcion() {
@@ -42,12 +63,12 @@ public class Producto implements Comparable<Producto>{
         this.descripcion = descripcion;
     }
 
-    public Categoria verCategoria() {
-        return categoria;
+    public float verPrecio() {
+        return precio;
     }
 
-    public void asignarCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void asignarPrecio(float precio) {
+        this.precio = precio;
     }
 
     public Estado verEstado() {
@@ -58,44 +79,24 @@ public class Producto implements Comparable<Producto>{
         this.estado = estado;
     }
 
+    public Categoria verCategoria() {
+        return categoria;
+    }
+
+    public void asignarCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
     
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Producto producto = (Producto) o;
+        return Objects.equals(codigo, producto.codigo);
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + this.codigo;
-        return hash;
+        return Objects.hash(codigo);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Producto other = (Producto) obj;
-        return this.codigo == other.codigo;
-    }
-    
-    @Override
-    public String toString() {
-    return "Producto{" + "descripcion=" + descripcion + '}';
-    }
-
-    public void mostrar(){
-        System.out.println("El producto: "+ descripcion +  "\n" + estado.toString() + "\n" + precio + "\n" + categoria + "\n" + codigo + "\n" );
-        
-    }
-
-    @Override
-    public int compareTo(Producto p) {
-        
-        return this.descripcion.compareTo(p.descripcion);
-    }
-    
-
 }

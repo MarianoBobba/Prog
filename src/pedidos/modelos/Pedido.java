@@ -1,41 +1,70 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package pedidos.modelos;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import usuarios.modelos.Cliente;
 
 
-public class Pedido implements Comparable<Pedido>{
-    private Integer numero;
+/**
+ *
+ * @author Usuario
+ */
+public class Pedido {
     private LocalDateTime fechaYHora;
-    private Estado estado;
+    private int numero;
     private Cliente cliente;
-    private List<ProductoDelPedido> unProductoDelPedido;
+    private Estado estado;
+    private List<ProductoDelPedido> pdp;
 
-    public Pedido(int numero, LocalDateTime fechaYHora, List<ProductoDelPedido> lista, Cliente cliente) {
-        this.numero = numero;
+    public Pedido(int numero, LocalDateTime fechaYHora, List<ProductoDelPedido> pdp, Cliente cliente) {
         this.fechaYHora = fechaYHora;
-        this.unProductoDelPedido = lista;
-        this.cliente = cliente; 
+        this.numero = numero;
+        this.cliente = cliente;
         this.estado = Estado.CREADO;
+        this.pdp = pdp;
     }
+      public void mostrar() {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter h = DateTimeFormatter.ofPattern("HH:mm");
 
-    @Override
-    public String toString() {
-        return "Pedido{" + "numero=" + numero + ", fechaYHora=" + fechaYHora + ", estado=" + estado + ", cliente=" + cliente + '}';
+        System.out.println("Nro:" + numero);
+        System.out.println("Fecha:" + fechaYHora.format(f) + "\t" + "Hora: " + fechaYHora.format(h));
+        System.out.println("Cliente:" + cliente.verApellido() + "," + cliente.verNombre());
+        System.out.println("Estado:" + estado);
+        for (ProductoDelPedido p : pdp) {
+            p.mostrar();
+            System.out.println();
+        }
+        System.out.println();
     }
     
 
-    public Cliente verCliente() {
-        return cliente;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pedido pedido = (Pedido) o;
+        return Objects.equals(numero, pedido.numero);
     }
 
-    public void asignarCliente(Cliente cliente) {
-        this.cliente = cliente;
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero);
+    }
+
+    public LocalDateTime verFechaYHora() {
+        return fechaYHora;
+    }
+
+    public void asignarFechaYHora(LocalDateTime fechaYHora) {
+        this.fechaYHora = fechaYHora;
     }
 
     public int verNumero() {
@@ -46,6 +75,14 @@ public class Pedido implements Comparable<Pedido>{
         this.numero = numero;
     }
 
+    public Cliente verCliente() {
+        return cliente;
+    }
+
+    public void asignarCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
     public Estado verEstado() {
         return estado;
     }
@@ -54,74 +91,11 @@ public class Pedido implements Comparable<Pedido>{
         this.estado = estado;
     }
 
-    public void asignarFecha(LocalDate fecha){
-        this.fechaYHora = this.fechaYHora;
-    }
-    
-    public LocalDate verFecha() {
-        LocalDate fecha = this.fechaYHora.toLocalDate();
-        return fecha;
-    }
-    
-    public void asignarHora(LocalTime hora){
-        this.fechaYHora = this.fechaYHora;
-    }
-    
-    public LocalTime verHora() {
-        LocalTime hora = this.fechaYHora.toLocalTime();
-        return hora;
+    public List<ProductoDelPedido> verPdp() {
+        return pdp;
     }
 
-    public List<ProductoDelPedido> verUnProductoDelPedido() {
-        return unProductoDelPedido;
+    public void asignarPdp(List<ProductoDelPedido> pdp) {
+        this.pdp = pdp;
     }
-
-    public void asignarUnProductoDelPedido(ArrayList<ProductoDelPedido> unProductoDelPedido) {
-        this.unProductoDelPedido = unProductoDelPedido;
-    }
-    
-   
-    public void mostrar(){
-    
-        System.out.println("\nNumero: " + this.numero + "\nFecha: " + this.fechaYHora.toLocalDate() + "\t\t\t\tHora: " + this.fechaYHora.toLocalTime() + "\nCliente: " + this.cliente.verApellido() + ", " + this.cliente.verNombre() + "\nEstado: " + this.estado);
-        System.out.println("        Producto            Cantidad\n");
-        System.out.println("        ============================\n");
-        
-        
-        for (ProductoDelPedido p : unProductoDelPedido){
-            System.out.println("        " + p.toString() + "      " + p.cantidad + "\n");
-        }
-
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + this.numero;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        
-        final Pedido other = (Pedido) obj;
-        return this.numero == other.numero;
-    }
-
-    @Override
-    public int compareTo(Pedido p) {
-        return (this.numero.compareTo(p.numero)*-1);
-    }
-
-  
 }
-

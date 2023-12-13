@@ -1,260 +1,196 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package productos.modelos;
-
-import interfaces.IGestorPedidos;
 import interfaces.IGestorProductos;
+import static interfaces.IGestorProductos.CATEGORIA;
+import static interfaces.IGestorProductos.CODIGO;
+import static interfaces.IGestorProductos.DESCRIPCION;
+import static interfaces.IGestorProductos.ESTADO;
+import static interfaces.IGestorProductos.EXITO;
+import static interfaces.IGestorProductos.INEXISTENTE;
+import static interfaces.IGestorProductos.PRECIO;
+import static interfaces.IGestorProductos.REPETIDO;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import productos.modelos.Producto;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import pedidos.modelos.GestorPedidos;
 
-
+/**
+ *
+ * @author Usuario
+ */
 public class GestorProductos implements IGestorProductos {
-
-    private final String NombreDelArchivo = "ArchivoProductos.txt";
-    BufferedWriter bw = null;
-    BufferedReader br = null;
-    String linea;
-    private List<Producto> productos = new ArrayList<>();
     
+    private static final String FILE_NAME = "productos.txt";
     private static GestorProductos gestor;
-    
 
-    private GestorProductos() {
-        this.leer(NombreDelArchivo);
+    public static IGestorProductos instanciar() {
+        return new GestorProductos();
     }
-
-    public static GestorProductos instanciar() {
-        if (gestor == null) {
-            gestor = new GestorProductos();
-        }
+    private ArrayList<Producto> productos = new ArrayList<>(); 
+//    private static final String EXITO = "Se creo/modifico el producto con exito.";
+//    private static final String CODIGO = "Codigo invalido. No se creo/modifico el producto.";
+//    private static final String DESCRIPCION = "Descripcion invalida. No se creo/modifico el producto.";
+//    private static final String PRECIO = "Precio invalido. No se creo/modifico el producto.";
+//    private static final String CATEGORIA = "Categoria invalida. No se creo/modifico el producto.";
+//    private static final String ESTADO = "Estado invalido. No se creo/modifico el producto.";
+//    private static final String REPETIDO = "Producto ya existente. No se creo/modifico el producto.";
+//    private static final String INEXISTENTE = "Producto no existente. No se creo/modifico el producto.";
+        
+    private GestorProductos() {
+        
+    }
+    
+    public static GestorProductos crear() {
+        if (gestor == null)
+        gestor = new GestorProductos();
         return gestor;
     }
-
-    @Override
-    public String crearProducto(int codigo, String descripcion, float precio, Categoria categoria, Estado estado) {
-
-        if (codigo <= 0) {
-            return ERROR_CODIGO;
-        }
-        if (descripcion == null || descripcion.isEmpty()) {
-            return ERROR_DESCRIPCION;
-        }
-        if (precio <= 0) {
-            return ERROR_PRECIO;
-        }
-        if (categoria == null) {
-            return ERROR_CATEGORIA;
-        }
-        if (estado == null) {
-            return ERROR_ESTADO;
-        } else {
-            Producto unProducto = new Producto(codigo, descripcion, categoria, estado, precio);
-
-            if (!productos.contains(unProducto)) {
-                productos.add(unProducto);
-                this.escribir();
-                return EXITO;
-            } else {
-                return PRODUCTOS_DUPLICADOS;
-            }
-
-        }
-
-    }
-
-    @Override
-    public String modificarProducto(Producto productoAModificar, int codigo, String descripcion, float precio, Categoria categoria, Estado estado) {
-        Producto productoAuxilar = null;
-
-        if (!productos.contains(productoAModificar)) {
-            return PRODUCTO_INEXISTENTE;
-        } else {
-
-            if (productoAModificar == null) {
-                /*cuando no esta asignada la referencia a un objeto*/
-                return PRODUCTO_INEXISTENTE;
-            }
-            if (descripcion == null || descripcion.isEmpty()) {
-                return ERROR_DESCRIPCION;
-            }
-            if (precio <= 0) {
-                return ERROR_PRECIO;
-            }
-            if (categoria == null) {
-                return ERROR_CATEGORIA;
-            }
-            if (estado == null) {
-                return ERROR_ESTADO;
-            }
-
-            for (Producto p : productos) {
-                if (p.equals(productoAModificar)) {
-                    productoAuxilar = p;
+    
+    private List<Producto> cargarProductosDesdeArchivo() {
+        List<Producto> productosCargados = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Producto producto = Producto.convertirDesdeCSV(line);
+                if (producto != null) {
+                    productosCargados.add(producto);
                 }
             }
-            if (productoAuxilar == null) {
-                return PRODUCTO_INEXISTENTE; 
-            }
-
-            productoAuxilar.asignarCategoria(categoria);
-            productoAuxilar.asignarDescripcion(descripcion);
-            productoAuxilar.asignarEstado(estado);
-            productoAuxilar.asignarPrecio(precio);
-
-            this.escribir();
-
-            return EXITO;
+        } catch (IOException e) {
+            System.err.println("Error al cargar productos desde el archivo: " + e.getMessage());
         }
+        return productosCargados;
     }
 
-    @Override
-    public List<Producto> menu() {
-        //Operador Lambda
-        Collections.sort(this.productos, (p1, p2) -> {
-            if (p1.verCategoria().compareTo(p2.verCategoria()) == 0) {
-                return p1.verDescripcion().compareTo(p2.verDescripcion());
-            } else {
-                return p1.verCategoria().compareTo(p2.verCategoria());
+    private void guardarProductosEnArchivo() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+            for (Producto producto : productos) {
+                writer.println(producto.toCSV());
             }
-        });
+        } catch (IOException e) {
+            System.err.println("Error al guardar productos en el archivo: " + e.getMessage());
+        }
+    }
+    
+    public String crearProducto(int codigo, String descripcion, float precio,Categoria categoria, Estado estado) {
+        
+        Producto P1 = new Producto (codigo, descripcion, categoria, estado, precio);
+        
+        if (codigo <= 0)
+            return CODIGO;
+        if (descripcion == null || descripcion.isEmpty ())
+            return DESCRIPCION;
+        else if (precio <= 0)
+            return PRECIO;
+        else if (categoria == null)
+            return CATEGORIA;
+        else if (estado == null)
+            return ESTADO;
+        else if (!productos.contains(P1)){
+            productos.add(P1);
+            guardarProductosEnArchivo();
+            return EXITO;
+        }
+        else 
+            return REPETIDO;
+    }
+    
+    public String modificarProducto(Producto productoAModificar, int codigo, String descripcion, float precio, Categoria categoria, Estado estado){
+        
+        if (productoAModificar == null)
+            return INEXISTENTE;
+        else if (codigo <= 0)
+            return CODIGO;
+        else if (descripcion == null || descripcion.isEmpty ())
+            return DESCRIPCION;
+        else if (precio <= 0)
+            return PRECIO;
+        else if (categoria == null)
+            return CATEGORIA;
+        else if (estado == null)
+            return ESTADO;
+        else {
+        productoAModificar.asignarCodigo (codigo);
+        productoAModificar.asignarDescripcion (descripcion);
+        productoAModificar.asignarPrecio (precio);
+        productoAModificar.asignarCategoria (categoria);
+        productoAModificar.asignarEstado (estado);
+        guardarProductosEnArchivo();
+        return EXITO;
+        }
+      }  
+        public List<Producto> menu() {
+        Collections.sort(productos, Comparator.comparing(Producto::verCategoria).thenComparing(Producto::verDescripcion));
+        guardarProductosEnArchivo();
         return productos;
     }
 
-    @Override
     public List<Producto> buscarProductos(String descripcion) {
-        List<Producto> productosBuscados = new ArrayList<>();
+        ArrayList<Producto> productosEncontrados = new ArrayList<>();
 
-        if (descripcion != null) {
-
-            for (Producto p : productos) {
-                if ((p.verDescripcion().toLowerCase()).contains(descripcion.toLowerCase())) {
-                    productosBuscados.add(p);
-                    this.escribir();
-                }
+        for (Producto producto : productos) {
+            if (producto.verDescripcion().toLowerCase().contains(descripcion.toLowerCase())) {
+                productosEncontrados.add(producto);
             }
-
         }
-
-        Collections.sort(productosBuscados, (pb1, pb2) -> {
-            if (pb1.verCategoria().compareTo(pb2.verCategoria()) == 0) {
-                return pb1.verDescripcion().compareTo(pb2.verDescripcion());
-            } else {
-                return pb1.verCategoria().compareTo(pb2.verCategoria());
-            }
-        });
-
-        return productosBuscados;
+        Collections.sort(productosEncontrados, Comparator.comparing(Producto::verCategoria).thenComparing(Producto::verDescripcion));
+        guardarProductosEnArchivo();
+        return productosEncontrados;
     }
-
-    @Override
+    
     public boolean existeEsteProducto(Producto producto) {
-
-        if (producto == null) {
-            return false;
-        }
-
-        return (productos.contains(producto));
+        return productos.contains(producto);
     }
-
-    @Override
+    
     public List<Producto> verProductosPorCategoria(Categoria categoria) {
+        ArrayList<Producto> productosPorCategoria = new ArrayList<>();
 
-        List<Producto> productosBuscados = new ArrayList<>();
-
-        for (Producto p : productos) {
-            if (p.verCategoria().equals(categoria)) {
-                productosBuscados.add(p);
+        for (Producto producto : productos) {
+            if (producto.verCategoria() == categoria) {
+                productosPorCategoria.add(producto);
             }
         }
-
-        Collections.sort(productosBuscados);
-        return productosBuscados;
+        Collections.sort(productosPorCategoria, Comparator.comparing(Producto::verDescripcion));
+        guardarProductosEnArchivo();
+        return productosPorCategoria;
     }
-
-    @Override
-    public Producto obtenerProducto(Integer codigo) {
-
-        for (Producto p : productos) {
-            if (p.verCodigo() == codigo) {
-                return p;
+    
+    public Producto obtenerProducto(int codigo) {
+        for (Producto producto : productos) {
+            if (producto.verCodigo() == codigo) {
+                return producto;
+            } else {
             }
         }
         return null;
     }
 
-    @Override
-    public String borrarProducto(Producto producto) {
-
-        if (producto == null) {
-            return PRODUCTO_INEXISTENTE;
+    public String borrarProducto(Producto producto){
+        GestorPedidos gP = GestorPedidos.crear();
+        if(producto == null){
+            return INEXISTENTE;
         }
-
-        IGestorPedidos gPedidos = GestorPedidos.instanciar();
-
-        if (productos.contains(producto) && !gPedidos.hayPedidosConEsteProducto(producto)) {
-            productos.remove(producto);
-            this.escribir();
-            return EXITO_BORRADO;
-
+        if(productos.contains(producto)){
+                if(gP.hayPedidosConEsteProducto(producto)) {
+                    return "\n\nNo se puede borrar este producto porque hay pedidos con el mismo";
+                    
+                } else {
+                    productos.remove(producto);
+                    guardarProductosEnArchivo();
+                    return EXITO;
+                }        
         }
-
-        return PRODUCTO_INEXISTENTE;
+        return INEXISTENTE;
     }
-
-    private void escribir() {
-        File f = new File(NombreDelArchivo);
-
-        try {
-            FileWriter fw = new FileWriter(f);
-            bw = new BufferedWriter(fw);
-
-            for (Producto p : this.productos) {
-                linea = (p.verDescripcion() + "," + p.verCategoria() + "," + p.verCodigo() + "," + p.verPrecio() + "," + p.verEstado());
-                bw.write(linea);
-                bw.newLine();
-            }
-            bw.close();
-
-        } catch (FileNotFoundException fnf) {
-            
-        }
-        catch (IOException ioe) {
-            
-        }
-
-    }
-
-    private void leer(String NombreDelArchivo) {
-        File f = new File(NombreDelArchivo);
-
-        try {
-            FileReader fr = new FileReader(f);
-            br = new BufferedReader(fr);
-
-            while ((linea = br.readLine()) != null) {
-                String[] vector = linea.split(",");
-                String descripcion = vector[0];
-                Categoria categoria = Categoria.valueOf(vector[1].toUpperCase()); // Convertir a enumeración
-                int codigo = Integer.parseInt(vector[2]);
-                float precio = Float.parseFloat(vector[3]);
-                Estado estado = Estado.valueOf(vector[4].toUpperCase());    // Convertir a enumeración
-
-                this.crearProducto(codigo, descripcion, precio, categoria, estado);
-            }
-            br.close();
-            }
-
-         catch (FileNotFoundException fnf) {
-            
-        } catch (IOException ioe) {
-            
-        }
-    }
+    
 }

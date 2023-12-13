@@ -67,15 +67,18 @@ public class ControladorAMUsuario implements IControladorAMUsuario {
         char[] claveRepVec = this.ventana.getClaveRepetida().getPassword();
         String claveRep = new String(claveRepVec);
         Perfil perfil = Perfil.valueOf(this.ventana.getComboPerfiles().getSelectedItem().toString());
-        //Si el indicador esta en 0, significa que debe guardar un usuario nuevo
         if (indicador == 0) {
             System.out.println(this.gu.crearUsuario(correo, apellido, nombre, perfil, clave, claveRep));
-        //Si el indicador esta en 1, significa que debe guardar un usuario modificado    
         } else {
             System.out.println(this.gu.modificarUsuario(UsuarioAModificar, correo, apellido, nombre, perfil, clave, claveRep));
             }
     }
 
+    
+    
+    
+    
+    
     @Override
     public void txtApellidoPresionarTecla(KeyEvent evt) {
     }

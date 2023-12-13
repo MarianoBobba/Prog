@@ -1,16 +1,31 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package pedidos.modelos;
 
 import java.util.Objects;
 import productos.modelos.Producto;
 
+/**
+ *
+ * @author Usuario
+ */
 public class ProductoDelPedido {
-    int cantidad;
-    private Producto unProducto;
+    private int cantidad;
+    private Producto producto;
 
-    public ProductoDelPedido(Producto unProducto, int cantidad) {
+    public ProductoDelPedido(Producto producto, int cantidad) {
         this.cantidad = cantidad;
-        this.unProducto = unProducto;
+        this.producto = producto;
+    }
+
+    public Producto verProducto() {
+        return producto;
+    }
+
+    public void asignarProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public int verCantidad() {
@@ -21,42 +36,20 @@ public class ProductoDelPedido {
         this.cantidad = cantidad;
     }
 
-    public Producto verUnProducto() {
-        return unProducto;
+    public void mostrar() {
+        System.out.println("Cantidad: " + cantidad + "Producto: "+ producto); 
     }
-
-    public void asignarUnProducto(Producto unProducto) {
-        this.unProducto = unProducto;
+    
+     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductoDelPedido that = (ProductoDelPedido) o;
+        return Objects.equals(producto, that.producto);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.unProducto);
-        return hash;
+        return Objects.hash(producto);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ProductoDelPedido other = (ProductoDelPedido) obj;
-        return Objects.equals(this.unProducto, other.unProducto);
-    }
-    
-    @Override
-    public String toString() {
-        return  unProducto.verDescripcion();
-    }
-    
-    
-    
 }
-

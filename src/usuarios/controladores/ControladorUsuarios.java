@@ -71,7 +71,6 @@ public class ControladorUsuarios implements IControladorUsuarios {
 
     @Override
     public void btnVolverClic(ActionEvent evt) {
-        //Cierra la ventana
         this.ventanaUsuario.dispose();
     }
 
@@ -85,8 +84,6 @@ public class ControladorUsuarios implements IControladorUsuarios {
 
     @Override
     public void btnBuscarClic(ActionEvent evt) {
-        String apellido = this.ventanaUsuario.getTxtApellido().getText();
-        this.ventanaUsuario.getTablaUsuarios().setModel(new ModeloTablaUsuarios(apellido));
 
     }
     

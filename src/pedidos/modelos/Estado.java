@@ -6,21 +6,19 @@ package pedidos.modelos;
 
 
 public enum Estado {
-    CREADO ("CREADO"),
-    SOLICITADO ("SOLICITADO"),
+    
+    CREADO("CREADO"),
+    SOLICITADO("SOLICITADO"),
     PROCESANDO ("PROCESANDO"),
     ENTREGADO ("ENTREGADO");
     
     private String valor;
-    
-    private Estado (String valor){
+
+    private Estado(String valor) {
         this.valor = valor;
     }
     
-    
-    @Override
-    public String toString() {
+    public String toString (){
         return this.valor;
     }
-
 }
